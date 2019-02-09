@@ -17,7 +17,6 @@ Class = require 'lib/class'
 utils = require 'lib/utils'  --funciones utilitarias bajadas de GitHub, casi todas en lume, algunas no estan y otras anadidas por mi (buscar copyright)
 lume = require 'lib/lume'  --funciones auxiliares bajadas de GitHub, tiene mas que Utils pero utils tiene unas que no hay aca (buscar copyright)
  
---cameraMain = require 'lib/camera'.new(0,0)
 timer = require 'lib/timer'
 vector = require 'lib/vector'
 

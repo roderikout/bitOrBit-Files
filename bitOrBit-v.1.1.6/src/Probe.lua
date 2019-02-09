@@ -89,7 +89,7 @@ function Probe:render() --renderiza todo
 
   self:stelaDraw()
 
-  --self:drawProbeInOrbitLine()
+  self:drawProbeInOrbitLine()
 
 end
 

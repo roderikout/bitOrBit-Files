@@ -40,6 +40,9 @@ function StartState:init()
         { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
     }
 
+    --logo pixel
+    self.pixelLogo = {a = 0}
+
     --logo position
     self.divideHeight = WINDOW_HEIGHT / (#self.map + 2)
     self.separationRectangles = self.divideHeight / 1.3
@@ -47,6 +50,12 @@ function StartState:init()
     --logo movement flags
     self.a = 1
     self.b = "up"
+    local grow, shrink
+    grow = function() timer.tween(1, self.pixelLogo, {a = 10}, "in-sine", shrink) end
+    shrink   = function() timer.tween(1, self.pixelLogo, {a = 0}, "in-sine", grow) end
+    
+
+    grow()
 
     --other flags
     self.instructionsOn = false
@@ -83,24 +92,11 @@ function StartState:update(dt)
         love.event.quit()
     end
 
-    self:logoMovement(dt)
+    timer.update(dt)
 
 end
 
 -- para hacer crecer y decrecer las letras del logo de BitOrBit
-function StartState:logoMovement(dt)
-    if self.b =="up" then
-        self.a = self.a + (10 * dt)
-        if self.a > 7 then
-            self.b = "down"
-        end
-    elseif self.b == "down" then
-        self.a = self.a - (10 * dt)
-        if self.a < 1 then
-            self.b = "up"
-        end
-    end
-end
 
 function StartState:render()
     self:drawStartLogo()
@@ -112,7 +108,8 @@ function StartState:drawStartLogo()
     for y = 1, #self.map do
         for x = 1, #self.map[y] do
             if self.map[y][x] == 1 then
-                love.graphics.rectangle("fill", x * self.divideHeight, y * self.divideHeight, self.separationRectangles + self.a, self.separationRectangles + self.a)
+                --love.graphics.rectangle("fill", x * self.divideHeight, y * self.divideHeight, self.separationRectangles + self.a, self.separationRectangles + self.a)
+                love.graphics.rectangle("fill", x * self.divideHeight, y * self.divideHeight, self.separationRectangles + self.pixelLogo.a, self.separationRectangles + self.pixelLogo.a)
             end
         end
     end
@@ -123,8 +120,8 @@ function StartState:drawStartText()  --tratar de tomar los textos del archivo te
     if not self.instructionsOn then
         love.graphics.setFont(gFonts['medium'])
         local fontHeight = gFonts['medium']:getHeight()
-        love.graphics.print("Press \"Space\" to start", WINDOW_WIDTH/2 - self.a, WINDOW_HEIGHT/2)
-        love.graphics.print("Press \"i\" to read the instructions", WINDOW_WIDTH/2 - self.a, WINDOW_HEIGHT/2 + fontHeight)
+        love.graphics.print("Press \"Space\" to start", WINDOW_WIDTH/2 - self.pixelLogo.a, WINDOW_HEIGHT/2)
+        love.graphics.print("Press \"i\" to read the instructions", WINDOW_WIDTH/2 - self.pixelLogo.a, WINDOW_HEIGHT/2 + fontHeight)
     else
         love.graphics.setFont(gFonts['small'])
         local fontHeight = gFonts['small']:getHeight()

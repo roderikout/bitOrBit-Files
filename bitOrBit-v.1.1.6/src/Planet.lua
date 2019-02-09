@@ -14,11 +14,7 @@
 
 Planet = Class{}
 
--- self.vector = require ("vector")
-
 function Planet:init(x, y, radius, mass, gravityRadius, orbits)
-  
-  --local self = self or {}
   
   self.x = x
   self.y = y
@@ -40,6 +36,8 @@ function Planet:init(x, y, radius, mass, gravityRadius, orbits)
   self.orbitWidth = self.orbitColoredArea - self.spaceBetween
 
   self.alpha = 80
+
+  self.zone = 0
 
   self.colorZones = {}
     
@@ -78,13 +76,19 @@ function Planet:renderColorZones()
 
     love.graphics.setLineWidth(self.orbitWidth)
     love.graphics.setColor(utils.colorToLine(i, self.alpha))
-    local zona = (((self.orbitWidth + self.spaceBetween) * i) - self.orbitWidth/2 + self.spaceBetween)
-    local orbit = love.graphics.circle("line", self.x, self.y, zona)
+    self.zone = (((self.orbitWidth + self.spaceBetween) * i) - self.orbitWidth/2 + self.spaceBetween)
+    love.graphics.circle("line", self.x, self.y, self.zone)
     love.graphics.setLineWidth(1)
-    love.graphics.setColor(100,100,100,255)
-    local lineDwnOrbit = love.graphics.circle("line", self.x, self.y, zona - self.orbitWidth/2)
-    local lineUpOrbit = love.graphics.circle("line", self.x, self.y, zona + self.orbitWidth/2)
-    table.insert(self.colorZones, {min = zona - (self.orbitWidth / 2), max = zona + (self.orbitWidth / 2)})
+    love.graphics.setColor(100,100,100,255) 
+    love.graphics.circle("line", self.x, self.y, self.zone - self.orbitWidth/2)
+    love.graphics.circle("line", self.x, self.y, self.zone + self.orbitWidth/2)
+    love.graphics.setColor(255,255,255,255)
+    if #self.colorZones < self.orbits then      
+      table.insert(self.colorZones, {min = self.zone - (self.orbitWidth / 2), max = self.zone + (self.orbitWidth / 2)})
+    else
+      lume.clear(self.colorZones)
+      table.insert(self.colorZones, {min = self.zone - (self.orbitWidth / 2), max = self.zone + (self.orbitWidth / 2)})
+    end
     love.graphics.setColor(255,255,255,255)
   end
 

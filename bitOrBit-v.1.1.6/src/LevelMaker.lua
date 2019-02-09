@@ -40,7 +40,11 @@ function LevelMaker.createLevel(level, planet)
 
     for i = 1, numberOfProbes do
       table.insert(orbitsNeededToWin, false)
-      table.insert(probes, i, Probe(coordProbeX , coordProbeY, 350, 270))
+      if love.timer.getFPS() > 40 then
+      	table.insert(probes, i, Probe(coordProbeX , coordProbeY, 450, 260))
+      else
+      	table.insert(probes, i, Probe(coordProbeX , coordProbeY, 350, 260))
+      end
       probes[i].popX = coordProbeX
       probes[i].popY = coordProbeY
       probes[i].number = i

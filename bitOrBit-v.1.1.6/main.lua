@@ -20,11 +20,11 @@ function love.load()
 
     --love.window.setMode(WINDOW_WIDTH, WINDOW_HEIGHT)
 
-	--Seed the RNG
+	--Seed the Random Number Generator (RNG)
 	math.randomseed(os.time())
 
 	--shuffle de RNG
-	for i=1, math.random(10) do
+	for i = 1, math.random(10) do
 		math.random()
 	end
 

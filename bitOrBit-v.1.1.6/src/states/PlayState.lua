@@ -46,10 +46,9 @@ function PlayState:enter(params)
 end
 
 function PlayState:update(dt)
+
+
   --manage pause state
-
-  self.debug = tostring(lume.first(self.probesOrbiting))
-
   if self.paused then
       if love.keyboard.wasPressed('space') then
           self.paused = false
@@ -77,13 +76,12 @@ function PlayState:update(dt)
   end
   self:checkOrbitsDone()
   self:checkWin()
-
+ 
+  if #self.planet.colorZones > 0 then
+    self.debug = self.planet.colorZones[1].max
+  end
 end
 
-function love.keypressed(key)
-  
-  
-end
 
 function PlayState:keyboardFunctions()
    
@@ -173,36 +171,7 @@ function PlayState:keyboardFunctions()
     self.probeSelected = 0
   end
 
-  --manage probe selecting
-  --[[if love.keyboard.wasPressed('p') then  -- rotar en seleccion de probes
-    
-    for i, p in ipairs(self.probesForLaunch) do   --recorrido por la tabla para desseleccionar cada probe
-      p.selected = false
-    end
-
-    if #self.probesOrbiting > 0 then
-      gSounds['pop']:play()
-      self.probeSelected = lume.first(self.probesOrbiting)
-      self.probeSelected = self.probeSelected + 1  --seleccionar la siguiente probe
-    
-      if self.probeSelected > #self.probesForLaunch then --si superamos el numero de probes desseleccionar las probes
-        self.probeSelected = 0
-      end
-
-      if self.probeSelected > 0 and self.probeSelected <= #self.probesForLaunch then
-        for i, p in ipairs(self.probesForLaunch) do
-          if p.number == self.probeSelected then
-            p.selected = true
-          end
-        end
-      end
-
-    end
-
-  end--]]
-
-
-  if love.keyboard.wasPressed('x') then --remove probe
+    if love.keyboard.wasPressed('x') then --remove probe
     if self.probeSelected > 0 then
       gSounds['explosion']:play()
       for i, p in ipairs(self.probesForLaunch) do
@@ -225,12 +194,6 @@ function PlayState:keyboardFunctions()
     gSounds['explosion']:play()
   end
 
-  --debugging
-  --if #self.probesForLaunch > 0 then
-    --for i, p in ipairs(self.probesForLaunch) do
-      
-    --end
-  --end  
 end
 
 function PlayState:render()
@@ -249,6 +212,20 @@ function PlayState:render()
     love.graphics.printf("PAUSE",
       0, WINDOW_HEIGHT / 2, WINDOW_WIDTH, 'center')
   end
+
+  --debugging
+  if #self.planet.colorZones > 0 then
+    love.graphics.setFont(gFonts['small'])
+    love.graphics.setColor(255,255,255,255)
+    love.graphics.print("Pmin text: " .. tostring(self.planet.colorZones[1].min), 10, 500)
+    love.graphics.print("Pmax text: " .. tostring(self.planet.colorZones[1].max), 10, 530)
+    love.graphics.print("Pmin text: " .. tostring(self.planet.colorZones[2].min), 10, 560)
+    love.graphics.print("Pmax text: " .. tostring(self.planet.colorZones[2].max), 10, 590)
+    love.graphics.print("Zones text: " .. tostring(#self.planet.colorZones), 10, 620)
+  end
+
+  
+
 end
 
 --[[ launchProbes:
