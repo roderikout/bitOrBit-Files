@@ -72,6 +72,16 @@ function StartState:init()
     self.firstLevel = true
     self.planet = Planet(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, 20, 300000, 380, self.levelInit + 1)
 
+    --Button
+    self.buttonFill = 'line'
+    self.buttonFontColor = {255,255,255,255}
+    --mouse
+    MOUSE_X = 0
+    MOUSE_Y = 0
+    MOUSE_BUTTON = nil
+    MOUSE_IS_TOUCH = nil
+    MOUSE_PRESSES = nil 
+
 end
 
 function StartState:update(dt)
@@ -93,7 +103,36 @@ function StartState:update(dt)
     end
 
     timer.update(dt)
+    self:mousePresses()
+    self:mouseHover()
+end
 
+function StartState:mousePresses ()
+
+    if MOUSE_X > WINDOW_WIDTH/1.7 and MOUSE_X < (WINDOW_WIDTH/1.7) + 350 and MOUSE_Y > WINDOW_HEIGHT/4 * 2.8 and MOUSE_Y < (WINDOW_HEIGHT/4 * 2.8) + 80 then
+        gSounds['select']:play()
+        self.map = nil
+        gStateMachine:change('newLevel', {
+            level = self.levelInit,
+            firstLevel = self.firstLevel,
+            planet = self.planet,
+            lastLevel = self.lastLevel,
+        })
+    end
+
+end
+
+function StartState:mouseHover()
+    local mouseX = love.mouse.getX( )
+    local mouseY = love.mouse.getY( )
+
+    if mouseX > WINDOW_WIDTH/1.7 and mouseX < (WINDOW_WIDTH/1.7) + 350 and mouseY > WINDOW_HEIGHT/4 * 2.8 and mouseY < (WINDOW_HEIGHT/4 * 2.8) + 80 then
+        self.buttonFill = "fill"
+        self.buttonFontColor = {0,0,0}
+    else
+        self.buttonFill = "line"
+        self.buttonFontColor = {255,255,255,255}
+    end
 end
 
 -- para hacer crecer y decrecer las letras del logo de BitOrBit
@@ -101,6 +140,7 @@ end
 function StartState:render()
     self:drawStartLogo()
     self:drawStartText()
+    self:drawStartButton()
 end
 
 function StartState:drawStartLogo()
@@ -118,9 +158,9 @@ end
 function StartState:drawStartText()  --tratar de tomar los textos del archivo textos
     
     if not self.instructionsOn then
-        love.graphics.setFont(gFonts['medium'])
-        local fontHeight = gFonts['medium']:getHeight()
-        love.graphics.print("Press \"Space\" to start", WINDOW_WIDTH/2 - self.pixelLogo.a, WINDOW_HEIGHT/2)
+        love.graphics.setFont(gFonts['small'])
+        local fontHeight = gFonts['small']:getHeight()
+        love.graphics.print("Press \"Space\" or click the button to start", WINDOW_WIDTH/2 - self.pixelLogo.a, WINDOW_HEIGHT/2)
         love.graphics.print("Press \"i\" to read the instructions", WINDOW_WIDTH/2 - self.pixelLogo.a, WINDOW_HEIGHT/2 + fontHeight)
     else
         love.graphics.setFont(gFonts['small'])
@@ -135,4 +175,14 @@ function StartState:drawStartText()  --tratar de tomar los textos del archivo te
         --love.graphics.printf("-Press 'Escape' to exit the game", WINDOW_WIDTH/2, WINDOW_HEIGHT/2 + (fontHeight *9), WINDOW_WIDTH/2 - self.divideHeight, "left")
         --love.graphics.printf("-Press 'I' to enter / exit the instructions", WINDOW_WIDTH/2, WINDOW_HEIGHT/2 + (fontHeight *10), WINDOW_WIDTH/2 - self.divideHeight, "left")
     end
+end
+
+function StartState:drawStartButton()
+
+    love.graphics.rectangle(self.buttonFill, WINDOW_WIDTH/1.7, WINDOW_HEIGHT/4 * 2.8, 350, 80)
+    love.graphics.setColor(self.buttonFontColor)
+    love.graphics.setFont(gFonts['medium'])
+    love.graphics.printf("Click here to start", WINDOW_WIDTH/1.7, WINDOW_HEIGHT/4 * 2.8 + 20, 350, "center")
+    love.graphics.setColor(255,255,255,255)
+
 end

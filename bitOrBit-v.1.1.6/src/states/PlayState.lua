@@ -41,7 +41,24 @@ function PlayState:enter(params)
     gSounds['musicGamePlay']:setLooping(true)
 
     --debugging
-    self.debug = 'Nothing happening'
+    self.debug = ''
+
+    --Buttons
+    self.buttonFastFill = 'line'
+    self.buttonSlowFill = 'line'
+    self.buttonDestroyFill = 'line'
+    self.buttonResetFill = 'line'
+    self.buttonFastFontColor = {255,255,255,255}
+    self.buttonSlowFontColor = {255,255,255,255}
+    self.buttonDestroyFontColor = {255,255,255,255}
+    self.buttonResetFontColor = {255,255,255,255}
+
+    --mouse
+    MOUSE_X = 0
+    MOUSE_Y = 0
+    MOUSE_BUTTON = nil
+    MOUSE_IS_TOUCH = nil
+    MOUSE_PRESSES = nil 
 
 end
 
@@ -76,10 +93,10 @@ function PlayState:update(dt)
   end
   self:checkOrbitsDone()
   self:checkWin()
+
+  self:mouseHover()
+  self:mousePresses()
  
-  if #self.planet.colorZones > 0 then
-    self.debug = self.planet.colorZones[1].max
-  end
 end
 
 
@@ -213,18 +230,60 @@ function PlayState:render()
       0, WINDOW_HEIGHT / 2, WINDOW_WIDTH, 'center')
   end
 
+  self:drawButtons()
   --debugging
-  if #self.planet.colorZones > 0 then
-    love.graphics.setFont(gFonts['small'])
-    love.graphics.setColor(255,255,255,255)
-    love.graphics.print("Pmin text: " .. tostring(self.planet.colorZones[1].min), 10, 500)
-    love.graphics.print("Pmax text: " .. tostring(self.planet.colorZones[1].max), 10, 530)
-    love.graphics.print("Pmin text: " .. tostring(self.planet.colorZones[2].min), 10, 560)
-    love.graphics.print("Pmax text: " .. tostring(self.planet.colorZones[2].max), 10, 590)
-    love.graphics.print("Zones text: " .. tostring(#self.planet.colorZones), 10, 620)
-  end
 
-  
+end
+
+function PlayState:mousePresses ()
+
+    if MOUSE_X > 20 and MOUSE_X < 100 and MOUSE_Y > WINDOW_HEIGHT/4 * 2.8 and MOUSE_Y < (WINDOW_HEIGHT/4 * 2.8) + 80 then
+        
+    end
+
+    if MOUSE_X > WINDOW_WIDTH - 100 and MOUSE_X < WINDOW_WIDTH - 20 and MOUSE_Y > WINDOW_HEIGHT/4 * 2.8 and MOUSE_Y < (WINDOW_HEIGHT/4 * 2.8) + 80 then
+        
+    end
+
+end
+
+function PlayState:mouseHover()
+    local mouseX = love.mouse.getX( )
+    local mouseY = love.mouse.getY( )
+
+    if mouseX > 20 and mouseX < 100 and mouseY > WINDOW_HEIGHT/4 * 2.8 and mouseY < (WINDOW_HEIGHT/4 * 2.8) + 80 then
+        self.buttonFastFill = "fill"
+        self.buttonFastFontColor = {0,0,0}
+    else
+        self.buttonFastFill = "line"
+        self.buttonFastFontColor = {255,255,255,255}
+    end
+
+    if mouseX > WINDOW_WIDTH - 100 and mouseX < WINDOW_WIDTH - 20 and mouseY > WINDOW_HEIGHT/4 * 2.8 and mouseY < (WINDOW_HEIGHT/4 * 2.8) + 80 then
+        self.buttonSlowFill = "fill"
+        self.buttonSlowFontColor = {0,0,0}
+    else
+        self.buttonSlowFill = "line"
+        self.buttonSlowFontColor = {255,255,255,255}
+    end
+
+end
+
+function PlayState:drawButtons()
+
+    --faster button
+    love.graphics.rectangle(self.buttonFastFill, 20, WINDOW_HEIGHT/4 * 2.8, 80, 80)
+    love.graphics.setColor(self.buttonFastFontColor)
+    love.graphics.setFont(gFonts['small'])
+    love.graphics.printf("Faster", 20, WINDOW_HEIGHT/4 * 2.8 + 30, 80, "center")
+    love.graphics.setColor(255,255,255,255)
+
+    --slower button
+    love.graphics.rectangle(self.buttonSlowFill, WINDOW_WIDTH - 100, WINDOW_HEIGHT/4 * 2.8, 80, 80)
+    love.graphics.setColor(self.buttonSlowFontColor)
+    love.graphics.setFont(gFonts['small'])
+    love.graphics.printf("Slower", WINDOW_WIDTH - 100, WINDOW_HEIGHT/4 * 2.8 + 30, 80, "center")
+    love.graphics.setColor(255,255,255,255)
 
 end
 

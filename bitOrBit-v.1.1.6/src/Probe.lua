@@ -71,6 +71,10 @@ function Probe:init(x, y, speed, direction)
  	self.probeStela = {}
  	self.stelaMax = 40
 
+  --mouse
+  self.mouseX = 0
+  self.mouseY = 0
+
 end
 
 function Probe:render() --renderiza todo
@@ -124,6 +128,14 @@ function Probe:update(dt) --update de todas las funciones necesarias de las prob
 
 	self:movementBySpeed(dt)
 
+  if love.mouse.isDown(1) then
+    self.mouseX = love.mouse.getX()
+    self.mouseY = love.mouse.getY()
+  else
+    self.mouseX = 0
+    self.mouseY = 0
+  end
+
   if self.selected then
     if love.keyboard.isDown("up") then
       self.up = true
@@ -131,6 +143,13 @@ function Probe:update(dt) --update de todas las funciones necesarias de las prob
     elseif love.keyboard.isDown("down") then
       self.down = true
       gSounds['trust']:play()
+    --buttons
+    elseif self.mouseX > 20 and self.mouseX < 100 and self.mouseY > WINDOW_HEIGHT/4 * 2.8 and self.mouseY < (WINDOW_HEIGHT/4 * 2.8) + 80 then
+      self.up = true
+      gSounds['trust']:play()
+    elseif self.mouseX > WINDOW_WIDTH - 100 and self.mouseX < WINDOW_WIDTH - 20 and self.mouseY > WINDOW_HEIGHT/4 * 2.8 and self.mouseY < (WINDOW_HEIGHT/4 * 2.8) + 80 then
+      self.down = true
+      gSounds['trust']:play()  
     else
       self.up = false
       self.down = false
@@ -200,6 +219,10 @@ function Probe:keyboardMove(dt)  --aplicacion de los thrust de aceleracion de la
       self.sp = self.sp + self.vectorDirection * dt
     elseif love.keyboard.isDown("down") then
       self.sp = self.sp - self.vectorDirection * dt
+    elseif self.mouseX > 20 and self.mouseX < 100 and self.mouseY > WINDOW_HEIGHT/4 * 2.8 and self.mouseY < (WINDOW_HEIGHT/4 * 2.8) + 80 then
+      self.sp = self.sp + self.vectorDirection * dt
+    elseif self.mouseX > WINDOW_WIDTH - 100 and self.mouseX < WINDOW_WIDTH - 20 and self.mouseY > WINDOW_HEIGHT/4 * 2.8 and self.mouseY < (WINDOW_HEIGHT/4 * 2.8) + 80 then
+      self.sp = self.sp - self.vectorDirection * dt 
     end
   end
 end
@@ -250,7 +273,7 @@ end
 
 function Probe:checkInsideOrbit(planetPosition) --para saber si la probe esta dentro de su orbita
    if self.distancia + self.r > self.zonaMin and self.distancia + self.r < self.zonaMax and #self.probeMinMax == 0 then 
-      self.pIn = vector.fromPolar(self.angle, self.distancia) + planetPosition
+      self.pIn = vector.fromPolar(self.angle, self.distancia + self.r) + planetPosition
       self.pMin = vector.fromPolar(self.angle, self.zonaMin) + planetPosition
       self.pMax = vector.fromPolar(self.angle, self.zonaMax) + planetPosition
       self.inMyOrbit = true

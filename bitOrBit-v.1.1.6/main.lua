@@ -109,6 +109,16 @@ function love.keyboard.wasPressed(key)
     end
 end
 
+function love.mousereleased( x, y, button, istouch, presses )
+
+    MOUSE_X = x
+    MOUSE_Y = y
+    MOUSE_BUTTON = button
+    MOUSE_IS_TOUCH = istouch
+    MOUSE_PRESSES = presses
+
+end
+
 
 function love.draw()
 

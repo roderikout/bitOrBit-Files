@@ -32,7 +32,7 @@ function ServeState:enter(params)
     self.planet.orbitWidth = self.orbitWidth.w
     self.isTimeForStart = false
 
-    local grow, shrink
+    local grow
 
     grow = function() 
               timer.tween(0.9, self.orbitWidth, {w = self.planet.orbitColoredArea - self.planet.spaceBetween}, 'in-out-sine')
@@ -41,10 +41,17 @@ function ServeState:enter(params)
     grow()
     
     --debugging
-    self.debug = "Nothing happnning"
+    self.debug = ""
 
     --test keyPressed
     timer.after(1, function() self.isTimeForStart = true end)
+
+    --mouse
+    MOUSE_X = 0
+    MOUSE_Y = 0
+    MOUSE_BUTTON = nil
+    MOUSE_IS_TOUCH = nil
+    MOUSE_PRESSES = nil 
 end
 
 function ServeState:update(dt)
@@ -67,10 +74,7 @@ function ServeState:update(dt)
       self.instructionsOn = not self.instructionsOn
     end
 
-    if #self.planet.colorZones > 0 then
-      self.debug = self.planet.colorZones[1].max
-    end
-
+    self:mousePresses()
 end
 
 function ServeState:render()
@@ -81,16 +85,7 @@ function ServeState:render()
 
   if self.isTimeForStart then
     self:renderGraphics()
-  end
-
-  if #self.planet.colorZones > 0 then
-    love.graphics.setFont(gFonts['small'])
-    love.graphics.setColor(255,255,255,255)
-    love.graphics.print("Pmin text: " .. tostring(self.planet.colorZones[1].min), 10, 500)
-    love.graphics.print("Pmax text: " .. tostring(self.planet.colorZones[1].max), 10, 530)
-    love.graphics.print("Pmin text: " .. tostring(self.planet.colorZones[2].min), 10, 560)
-    love.graphics.print("Pmax text: " .. tostring(self.planet.colorZones[2].max), 10, 590)
-    love.graphics.print("Zones text: " .. tostring(#self.planet.colorZones), 10, 620)
+    self.enterColorZones = false
   end
  
 end 
@@ -104,7 +99,21 @@ function ServeState:renderGraphics()
 
   -- instructions text
   love.graphics.setFont(gFonts['medium'])
-  love.graphics.printf('Press Space to spawn probes!', 0, WINDOW_HEIGHT / 2 + fontHeight,
+  love.graphics.printf('Press Space or click anywhere to spawn probes!', 0, WINDOW_HEIGHT / 2 + fontHeight,
       WINDOW_WIDTH, 'center')
   
+end
+
+function ServeState:mousePresses()
+
+    if MOUSE_X > 0 and MOUSE_X < WINDOW_WIDTH and MOUSE_Y > 0 and MOUSE_Y < WINDOW_HEIGHT then
+      gSounds['select']:play()
+      gStateMachine:change('play', {
+          level = self.level,
+          firstLevel = self.firstLevel,
+          planet = self.planet,
+          lastLevel = self.lastLevel,
+      })
+    end
+
 end

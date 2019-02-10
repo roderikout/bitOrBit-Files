@@ -40,6 +40,7 @@ function Planet:init(x, y, radius, mass, gravityRadius, orbits)
   self.zone = 0
 
   self.colorZones = {}
+  self.enterColorZones = true
     
 end
 
@@ -69,8 +70,10 @@ function Planet:renderColorZones()
     if #self.orbitsNeededToWin > 0 then
       if self.orbitsNeededToWin[i] then
         self.alpha = 200
+        
       elseif not self.orbitsNeededToWin[i] then
         self.alpha = 80
+        
       end
     end
 
@@ -82,13 +85,14 @@ function Planet:renderColorZones()
     love.graphics.setColor(100,100,100,255) 
     love.graphics.circle("line", self.x, self.y, self.zone - self.orbitWidth/2)
     love.graphics.circle("line", self.x, self.y, self.zone + self.orbitWidth/2)
+
     love.graphics.setColor(255,255,255,255)
-    if #self.colorZones < self.orbits then      
+    if #self.colorZones < self.orbits and self.enterColorZones then      
       table.insert(self.colorZones, {min = self.zone - (self.orbitWidth / 2), max = self.zone + (self.orbitWidth / 2)})
-    else
+    elseif #self.colorZones == self.orbits and self.enterColorZones then
       lume.clear(self.colorZones)
       table.insert(self.colorZones, {min = self.zone - (self.orbitWidth / 2), max = self.zone + (self.orbitWidth / 2)})
-    end
+    end    
     love.graphics.setColor(255,255,255,255)
   end
 
